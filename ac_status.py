@@ -47,8 +47,6 @@ def check_ac_status(db_path, db_filename):
 
 
 if __name__ == "__main__":
-    args = sys.argv[1:]
-    print_help = len(args) == 0
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--db-path",
@@ -64,7 +62,7 @@ if __name__ == "__main__":
         help="Database filename (eg: mc2.db)",
         default="mc2.db",
     )
+    args = parser.parse_args(sys.argv[1:])
 
-    _args = parser.parse_args(args)
-    return_code = check_ac_status(_args.db_path, _args.db_filename)
+    return_code = check_ac_status(args.db_path, args.db_filename)
     sys.exit(return_code)
