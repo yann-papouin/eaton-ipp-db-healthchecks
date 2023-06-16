@@ -1,12 +1,13 @@
+#!/usr/bin/env python3
+
 import sqlite3
 import json
 import sys
 import os
+import argparse
 
 from datetime import datetime
 
-DB_PATH = "/usr/local/Eaton/IntelligentPowerProtector/db"
-DB_FILENAME = "mc2.db"
 DEBUG = False
 
 
@@ -15,8 +16,8 @@ def dict_diff(first_dict, second_dict):
     return value
 
 
-def check_ac_status():
-    database = os.path.join(DB_PATH, DB_FILENAME)
+def check_ac_status(db_path, db_filename):
+    database = os.path.join(db_path, db_filename)
     if os.path.exists(database):
         con = sqlite3.connect(database)
 
@@ -46,5 +47,24 @@ def check_ac_status():
 
 
 if __name__ == "__main__":
-    return_code = check_ac_status()
+    args = sys.argv[1:]
+    print_help = len(args) == 0
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--db-path",
+        nargs=1,
+        metavar=("DB_PATH"),
+        help="Database path (eg: /usr/local/Eaton/IntelligentPowerProtector/db)",
+        default="/usr/local/Eaton/IntelligentPowerProtector/db",
+    )
+    parser.add_argument(
+        "--db-filename",
+        nargs=1,
+        metavar=("DB_FILENAME"),
+        help="Database filename (eg: mc2.db)",
+        default="mc2.db",
+    )
+
+    _args = parser.parse_args(args)
+    return_code = check_ac_status(_args.db_path, _args.db_filename)
     sys.exit(return_code)
