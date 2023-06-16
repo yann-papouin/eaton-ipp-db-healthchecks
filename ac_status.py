@@ -50,14 +50,12 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "--db-path",
-        nargs=1,
         metavar=("DB_PATH"),
         help="Database path (eg: /usr/local/Eaton/IntelligentPowerProtector/db)",
         default="/usr/local/Eaton/IntelligentPowerProtector/db",
     )
     parser.add_argument(
         "--db-filename",
-        nargs=1,
         metavar=("DB_FILENAME"),
         help="Database filename (eg: mc2.db)",
         default="mc2.db",
