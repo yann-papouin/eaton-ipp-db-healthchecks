@@ -8,7 +8,7 @@ import argparse
 
 from datetime import datetime
 
-DEBUG = False
+DEBUG = True
 
 
 def dict_diff(first_dict, second_dict):
@@ -39,6 +39,11 @@ def check_ac_status(db_path, db_filename, on_error_cmd):
                 res = 0
             else:
                 res = 1
+
+            if res == 0 and vals["System.CommunicationLost"] == "1":
+                print("Communication Lost:", vals.get("System.CommunicationErrorState"))
+                res = 2
+
         except sqlite3.OperationalError as e:
             print(e.args[0])
             if e.args[0] == "database is locked":
