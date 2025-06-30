@@ -16,6 +16,11 @@ def dict_diff(first_dict, second_dict):
     return value
 
 
+def try_run_error_cmd(on_error_cmd):
+    if on_error_cmd:
+        print("Run", on_error_cmd)
+        os.system(on_error_cmd)
+
 def check_ac_status(db_path, db_filename, on_error_cmd):
     database = os.path.join(db_path, db_filename)
     if os.path.exists(database):
@@ -41,17 +46,20 @@ def check_ac_status(db_path, db_filename, on_error_cmd):
                 res = 1
 
             if res == 0 and vals["System.CommunicationLost"] == "1":
-                print("Communication Lost:", vals.get("System.CommunicationErrorState"))
+                com_error_state = vals.get("System.CommunicationErrorState")
+                print("----------------------------------------------")
+                print(f"Communication Lost: {com_error_state}\n")
+                print("Check that USB auto suspend is disabled on your Proxmox Host:")
+                print('GRUB_CMDLINE_LINUX_DEFAULT="quiet usbcore.autosuspend=-1"')
+                print("----------------------------------------------")
                 res = 2
 
         except sqlite3.OperationalError as e:
             print(e.args[0])
             if e.args[0] == "database is locked":
                 res = -1
-                if on_error_cmd:
-                    print("Run", on_error_cmd)
-                    os.system(on_error_cmd)
-                
+                try_run_error_cmd(on_error_cmd)
+
         con.close()
     else:
         print(database, "not found")
